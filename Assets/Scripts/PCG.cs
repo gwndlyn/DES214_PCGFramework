@@ -96,7 +96,7 @@ public class PCG : MonoBehaviour
 
     }
 
-    // PCG Room Helper Functions ---------------------------------------
+    // PCG Room Helper Functions ------------------------------------------------------------------------------
 
     RoomInfo SpawnRoom(RoomInfo roomInfo, bool hasCorridor)
     {
@@ -116,9 +116,6 @@ public class PCG : MonoBehaviour
             for (int y = 0; y < roomSizeY; ++y)
                 SpawnFloorTile(new Vector2Int(roomTilePos.x + x, roomTilePos.y + y));
 
-        if (!hasCorridor)
-            return new RoomInfo(roomInfo.NextTilePos, false);
-
         //get corridor info
         bool isVertical = RNG.Next(0, 2) == 0;
 
@@ -126,6 +123,8 @@ public class PCG : MonoBehaviour
         {
             roomTilePos.x += ((roomSizeX - 1) / 2);
             roomTilePos.y += roomSizeY;
+            if(!hasCorridor)
+                Spawn("portal", roomTilePos);
             SpawnFloorTile(roomTilePos);
             ++roomTilePos.y;
         }
@@ -133,6 +132,8 @@ public class PCG : MonoBehaviour
         {
             roomTilePos.x += roomSizeX;
             roomTilePos.y += ((roomSizeY - 1) / 2);
+            if (!hasCorridor)
+                Spawn("portal", roomTilePos);
             SpawnFloorTile(roomTilePos);
             ++roomTilePos.x;
         }
@@ -142,11 +143,11 @@ public class PCG : MonoBehaviour
 
     void SpawnEdgeWalls()
     {
-        for (int x = 0; x < MaxMapSize.x / 2; ++x)
+        for (int x = 0; x < MaxMapSize.x; ++x)
         {
-            for (int y = 0; y < MaxMapSize.y / 2; ++y)
+            for (int y = 0; y < MaxMapSize.y; ++y)
             {
-                if (x == 0 || y == 0 || x == MaxMapSize.x / 2 - 1 || y == MaxMapSize.y / 2 - 1)
+                if (x == 0 || y == 0 || x == MaxMapSize.x - 1 || y == MaxMapSize.y - 1)
                     Spawn("wall", new Vector2Int(x, y));
             }
         }
@@ -167,7 +168,7 @@ public class PCG : MonoBehaviour
         }
     }
 
-    // General Spawn Helper Functions ---------------------------------------
+    // General Spawn Helper Functions ------------------------------------------------------------------------------
 
     //Get a tile object (only walls and floors, currently)
     GameObject GetTile(Vector2Int pos)
