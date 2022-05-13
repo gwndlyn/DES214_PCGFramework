@@ -18,17 +18,19 @@ public class PCG : MonoBehaviour
 
     private enum PHASE
     {
-        STARTING,
         SETUP,
         HOOK,
         DEVELOPMENT,
         TURN,
         RESOLUTION
     };
-    private PHASE Phase = PHASE.STARTING;
+    private PHASE Phase = PHASE.SETUP;
 
     public class RoomInfo
     {
+        public Vector2Int RoomSize;
+        public Vector2Int LowerLeftPos;
+
         public Vector2Int NextTilePos;
         public bool IsVertical;
 
@@ -85,11 +87,97 @@ public class PCG : MonoBehaviour
         SpawnEdgeWalls();
 
         RoomInfo currRoom = new RoomInfo(new Vector2Int(3, 3), true);
+        int minRoomPerPhase = RoomsToSpawn / 5;
+        int minRoomPerPhaseRemainder = RoomsToSpawn % 5;
+        int remainderCheck = minRoomPerPhaseRemainder % 2;
+        int setupPhaseRooms = 0;
+        int devPhaseRooms = 0;
+
+        if (minRoomPerPhaseRemainder == 1)
+            devPhaseRooms = 1;
+        else if (minRoomPerPhaseRemainder % 2 == 1)
+        {
+            devPhaseRooms = minRoomPerPhaseRemainder / 2 + 1;
+            setupPhaseRooms = minRoomPerPhaseRemainder / 2;
+        }
+        else
+        {
+            devPhaseRooms = minRoomPerPhaseRemainder / 2;
+            setupPhaseRooms = minRoomPerPhaseRemainder / 2;
+        }
+
+        int currRoomInPhase = 0;
         for (int i = 0; i < RoomsToSpawn; ++i)
         {
-            currRoom = (i < RoomsToSpawn - 1) 
-                ? SpawnRoom(currRoom, true) 
+            //create the room first
+            currRoom = (i < RoomsToSpawn - 1)
+                ? SpawnRoom(currRoom, true)
                 : SpawnRoom(currRoom, false);
+
+            //then populate room based on phase
+            switch (Phase)
+            {
+                case PHASE.SETUP:
+                    {
+                        if (i > 0)
+                            EnemySpawner("enemy", currRoom, 2);
+
+                        if (currRoomInPhase == setupPhaseRooms)
+                        {
+                            currRoomInPhase = 0;
+                            Phase = PHASE.HOOK;
+                        }
+                        break;
+                    }
+                case PHASE.HOOK:
+                    {
+                        EnemySpawner("enemy", currRoom, 1);
+                        EnemySpawner("fast", currRoom, 2);
+
+                        if (currRoomInPhase == minRoomPerPhase)
+                        {
+                            currRoomInPhase = 0;
+                            Phase = PHASE.DEVELOPMENT;
+                        }
+                        break;
+                    }
+                case PHASE.DEVELOPMENT:
+                    {
+                        EnemySpawner("enemy", currRoom, 1);
+                        EnemySpawner("fast", currRoom, 2);
+                        EnemySpawner("tank", currRoom, 1);
+
+                        if (currRoomInPhase == devPhaseRooms)
+                        {
+                            currRoomInPhase = 0;
+                            Phase = PHASE.TURN;
+                        }
+                        break;
+                    }
+                case PHASE.TURN:
+                    {
+                        EnemySpawner("fast", currRoom, 2);
+                        EnemySpawner("tank", currRoom, 1);
+                        EnemySpawner("boss", currRoom, 1);
+
+                        if (currRoomInPhase == minRoomPerPhase)
+                        {
+                            currRoomInPhase = 0;
+                            Phase = PHASE.RESOLUTION;
+                        }
+                        break;
+                    }
+                case PHASE.RESOLUTION:
+                    {
+                        EnemySpawner("enemy", currRoom, 2);
+
+                        break;
+                    }
+                default:
+                    break;
+            }
+
+            ++currRoomInPhase;
         }
 
         FillInWalls();
@@ -111,6 +199,8 @@ public class PCG : MonoBehaviour
         else
             roomTilePos.y -= (roomSizeY - 1) / 2;
 
+        Vector2Int lowerLeftPos = roomTilePos;
+
         //create floor tile
         for (int x = 0; x < roomSizeX; ++x)
             for (int y = 0; y < roomSizeY; ++y)
@@ -121,9 +211,9 @@ public class PCG : MonoBehaviour
 
         if (isVertical)
         {
-            roomTilePos.x += ((roomSizeX - 1) / 2);
+            roomTilePos.x += (roomSizeX - 1) / 2;
             roomTilePos.y += roomSizeY;
-            if(!hasCorridor)
+            if (!hasCorridor)
                 Spawn("portal", roomTilePos);
             SpawnFloorTile(roomTilePos);
             ++roomTilePos.y;
@@ -131,13 +221,17 @@ public class PCG : MonoBehaviour
         else
         {
             roomTilePos.x += roomSizeX;
-            roomTilePos.y += ((roomSizeY - 1) / 2);
+            roomTilePos.y += (roomSizeY - 1) / 2;
             if (!hasCorridor)
                 Spawn("portal", roomTilePos);
             SpawnFloorTile(roomTilePos);
             ++roomTilePos.x;
         }
-        return new RoomInfo(roomTilePos, isVertical);
+
+        RoomInfo retInfo = new RoomInfo(roomTilePos, isVertical);
+        retInfo.RoomSize = new Vector2Int(roomSizeX, roomSizeY);
+        retInfo.LowerLeftPos = lowerLeftPos;
+        return retInfo;
 
     }
 
@@ -167,6 +261,29 @@ public class PCG : MonoBehaviour
             }
         }
     }
+
+    // General Spawn Helper Functions ------------------------------------------------------------------------------
+    
+    void EnemySpawner(string type, RoomInfo roominfo, int count)
+    {
+        Vector2Int[] spawnPosArr = new Vector2Int[count];
+        int x = roominfo.RoomSize.x / count;
+        int y = roominfo.RoomSize.y / count;
+        
+        if (count > 1)
+        {
+            for (int i = 0; i < count; ++i)
+                spawnPosArr[i] = roominfo.LowerLeftPos + i * new Vector2Int(x, y);
+        }
+        else if (count == 1)
+        {
+            spawnPosArr[0] = new Vector2Int(roominfo.LowerLeftPos.x + roominfo.RoomSize.x / 2, roominfo.LowerLeftPos.y + roominfo.RoomSize.y / 2);
+        }
+
+        for (int i = 0; i < count; ++i)
+            Spawn(type, spawnPosArr[i]);
+    }
+
 
     // General Spawn Helper Functions ------------------------------------------------------------------------------
 

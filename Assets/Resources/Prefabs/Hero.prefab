@@ -163,7 +163,7 @@ MonoBehaviour:
   SilverKeys: 0
   StartingGoldKeys: 0
   GoldKeys: 0
-  StartingSpeed: 1
+  StartingSpeed: 4
   Speed: 0
 --- !u!114 &2718702606646654962
 MonoBehaviour:
