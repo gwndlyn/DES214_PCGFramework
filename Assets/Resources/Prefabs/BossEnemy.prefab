@@ -156,7 +156,7 @@ MonoBehaviour:
   BulletPrefab: {fileID: 949405139173548867, guid: 8a17d45d188b39449aa155aa0cdd70e0,
     type: 3}
   ShootCooldown: 1
-  BulletSpeed: 1
+  BulletSpeed: 8
   BulletRange: 10
   BulletsPerShot: 1
   BulletSpreadAngle: 0.5

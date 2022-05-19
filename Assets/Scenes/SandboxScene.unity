@@ -185,6 +185,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2718702606646654963, guid: fc37f8548e748f04f99984295524785e,
+        type: 3}
+      propertyPath: StartingSpeed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 2718702606646654973, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
       propertyPath: m_Name
@@ -199,6 +204,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
+        type: 3}
+      propertyPath: RoomsToSpawn
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 7179176755972908415, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
       propertyPath: m_Name

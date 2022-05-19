@@ -9,7 +9,7 @@ public class PCG : MonoBehaviour
     public float GridSize = 5.0f; //Size of floor and wall tiles in units
     public Vector2Int MaxMapSize = new Vector2Int(50, 50); //Maximum width and height of tile map
 
-    public int RoomsToSpawn = 8;
+    public int RoomsToSpawn = 13;
 
     private Dictionary<string, GameObject> Prefabs; //Dictionary of all PCG prefabs
     private GameObject[,] TileMap; //Tilemap array to make sure we don't put walls over floors
@@ -32,12 +32,19 @@ public class PCG : MonoBehaviour
         public Vector2Int LowerLeftPos;
 
         public Vector2Int NextTilePos;
-        public bool IsVertical;
+        public enum DIRECTION
+        {
+            UP,
+            DOWN,
+            LEFT,
+            RIGHT
+        };
+        public DIRECTION Direction;
 
-        public RoomInfo(Vector2Int nextTilePos, bool isVertical)
+        public RoomInfo(Vector2Int nextTilePos, DIRECTION dir)
         {
             NextTilePos = nextTilePos;
-            IsVertical = isVertical;
+            Direction = dir;
         }
     };
 
@@ -86,24 +93,24 @@ public class PCG : MonoBehaviour
 
         SpawnEdgeWalls();
 
-        RoomInfo currRoom = new RoomInfo(new Vector2Int(3, 3), true);
+        RoomInfo currRoom = new RoomInfo(new Vector2Int(3, 3), RoomInfo.DIRECTION.UP);
         int minRoomPerPhase = RoomsToSpawn / 5;
         int minRoomPerPhaseRemainder = RoomsToSpawn % 5;
         int remainderCheck = minRoomPerPhaseRemainder % 2;
-        int setupPhaseRooms = 0;
-        int devPhaseRooms = 0;
+        int setupPhaseRooms = minRoomPerPhase;
+        int devPhaseRooms = minRoomPerPhase;
 
         if (minRoomPerPhaseRemainder == 1)
-            devPhaseRooms = 1;
-        else if (minRoomPerPhaseRemainder % 2 == 1)
+            devPhaseRooms += 1;
+        else if (remainderCheck % 2 == 1)
         {
-            devPhaseRooms = minRoomPerPhaseRemainder / 2 + 1;
-            setupPhaseRooms = minRoomPerPhaseRemainder / 2;
+            devPhaseRooms += minRoomPerPhaseRemainder / 2 + 1;
+            setupPhaseRooms += minRoomPerPhaseRemainder / 2;
         }
         else
         {
-            devPhaseRooms = minRoomPerPhaseRemainder / 2;
-            setupPhaseRooms = minRoomPerPhaseRemainder / 2;
+            devPhaseRooms += minRoomPerPhaseRemainder / 2;
+            setupPhaseRooms += minRoomPerPhaseRemainder / 2;
         }
 
         int currRoomInPhase = 0;
@@ -188,16 +195,30 @@ public class PCG : MonoBehaviour
 
     RoomInfo SpawnRoom(RoomInfo roomInfo, bool hasCorridor)
     {
-        //get room size
-        int roomSizeX = RNG.Next(1, 3) * 2 + 1;
-        int roomSizeY = RNG.Next(1, 3) * 2 + 1;
+        //decide  room size
+        int roomSizeX = RNG.Next(1, 4) * 2 + 1;
+        int roomSizeY = RNG.Next(1, 4) * 2 + 1;
 
         //push starting to lower left
         Vector2Int roomTilePos = roomInfo.NextTilePos;
-        if (roomInfo.IsVertical)
+        if (roomInfo.Direction == RoomInfo.DIRECTION.UP)
+        {
             roomTilePos.x -= (roomSizeX - 1) / 2;
-        else
+        }
+        else if (roomInfo.Direction == RoomInfo.DIRECTION.DOWN)
+        {
+            roomTilePos.x -= (roomSizeX - 1) / 2;
+            roomTilePos.y -= roomTilePos.y;
+        }
+        else if (roomInfo.Direction == RoomInfo.DIRECTION.LEFT)
+        {
+            roomTilePos.x -= (roomSizeX - 1) / 2;
+            roomTilePos.y -= roomSizeY;
+        }
+        else if (roomInfo.Direction == RoomInfo.DIRECTION.RIGHT)
+        {
             roomTilePos.y -= (roomSizeY - 1) / 2;
+        }
 
         Vector2Int lowerLeftPos = roomTilePos;
 
@@ -206,29 +227,84 @@ public class PCG : MonoBehaviour
             for (int y = 0; y < roomSizeY; ++y)
                 SpawnFloorTile(new Vector2Int(roomTilePos.x + x, roomTilePos.y + y));
 
-        //get corridor info
-        bool isVertical = RNG.Next(0, 2) == 0;
+        //decide corridor info
+        bool isSafe = false;
+        RoomInfo.DIRECTION nextRoomDir = RoomInfo.DIRECTION.UP;
+        Vector2Int roomTilePosBackUp = roomTilePos;
 
-        if (isVertical)
+        while (!isSafe)
         {
-            roomTilePos.x += (roomSizeX - 1) / 2;
-            roomTilePos.y += roomSizeY;
-            if (!hasCorridor)
-                Spawn("portal", roomTilePos);
-            SpawnFloorTile(roomTilePos);
-            ++roomTilePos.y;
-        }
-        else
-        {
-            roomTilePos.x += roomSizeX;
-            roomTilePos.y += (roomSizeY - 1) / 2;
-            if (!hasCorridor)
-                Spawn("portal", roomTilePos);
-            SpawnFloorTile(roomTilePos);
-            ++roomTilePos.x;
+            nextRoomDir = (RoomInfo.DIRECTION)RNG.Next(0, 4);
+            roomTilePos = roomTilePosBackUp;
+
+            if (nextRoomDir == RoomInfo.DIRECTION.UP)
+            {
+                roomTilePos.x += (roomSizeX - 1) / 2;
+                roomTilePos.y += roomSizeY;
+                if (GetTile(roomTilePos) != null)
+                {
+                    Debug.Log("sfjhbsjdfb");
+                    continue;
+                }
+                
+                if (!hasCorridor)
+                    Spawn("portal", roomTilePos);
+                SpawnFloorTile(roomTilePos);
+
+                ++roomTilePos.y;
+            }
+            else if (nextRoomDir == RoomInfo.DIRECTION.DOWN)
+            {
+                roomTilePos.x += (roomSizeX - 1) / 2;
+
+                if (GetTile(roomTilePos) != null)
+                {
+                    Debug.Log("sfjhbsjdfb");
+                    continue;
+                }
+
+                if (!hasCorridor)
+                    Spawn("portal", roomTilePos);
+                SpawnFloorTile(roomTilePos);
+
+                ++roomTilePos.y;
+            }
+            else if (nextRoomDir == RoomInfo.DIRECTION.LEFT)
+            {
+                roomTilePos.y += (roomSizeY - 1) / 2;
+
+                if (GetTile(roomTilePos) != null)
+                {
+                    Debug.Log("sfjhbsjdfb");
+                    continue;
+                }
+
+                if (!hasCorridor)
+                    Spawn("portal", roomTilePos);
+                SpawnFloorTile(roomTilePos);
+
+                ++roomTilePos.x;
+            }
+            else if (nextRoomDir == RoomInfo.DIRECTION.RIGHT)
+            {
+                roomTilePos.x += roomSizeX;
+                roomTilePos.y += (roomSizeY - 1) / 2;
+
+                if (GetTile(roomTilePos) != null)
+                {
+                    Debug.Log("sfjhbsjdfb");
+                    continue;
+                }
+
+                if (!hasCorridor)
+                    Spawn("portal", roomTilePos);
+                SpawnFloorTile(roomTilePos);
+
+                ++roomTilePos.x;
+            }
         }
 
-        RoomInfo retInfo = new RoomInfo(roomTilePos, isVertical);
+        RoomInfo retInfo = new RoomInfo(roomTilePos, nextRoomDir);
         retInfo.RoomSize = new Vector2Int(roomSizeX, roomSizeY);
         retInfo.LowerLeftPos = lowerLeftPos;
         return retInfo;
@@ -263,13 +339,13 @@ public class PCG : MonoBehaviour
     }
 
     // General Spawn Helper Functions ------------------------------------------------------------------------------
-    
+
     void EnemySpawner(string type, RoomInfo roominfo, int count)
     {
         Vector2Int[] spawnPosArr = new Vector2Int[count];
         int x = roominfo.RoomSize.x / count;
         int y = roominfo.RoomSize.y / count;
-        
+
         if (count > 1)
         {
             for (int i = 0; i < count; ++i)

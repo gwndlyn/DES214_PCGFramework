@@ -17,7 +17,7 @@ using UnityEngine;
 public class HeroShoot : MonoBehaviour
 {
     public GameObject BulletPrefab;
-    public float BulletSpeed = 5.0f;
+    public float BulletSpeed = 10.0f;
     public float BulletRange = 20.0f;
     public float ShotCooldown = 1.0f;
     public float BulletSpreadAngle = 0.1f;

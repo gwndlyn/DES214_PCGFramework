@@ -16,7 +16,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyChaseLogic : MonoBehaviour
 {
-    public float AggroRange = 8f;
+    public float AggroRange = 20f;
     public float MoveSpeed = 5f;
     public float WanderInterval = 2f;
 	[HideInInspector]
