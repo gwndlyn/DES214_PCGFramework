@@ -13,10 +13,12 @@ public class PCG : MonoBehaviour
 
     private Dictionary<string, GameObject> Prefabs; //Dictionary of all PCG prefabs
     private GameObject[,] TileMap; //Tilemap array to make sure we don't put walls over floors
-    private int TileMapMidPoint; //The 0,0 point of the tile map array
     private System.Random RNG;
 
-    private enum PHASE
+    private List<RoomInfo> RoomInfoList = new List<RoomInfo>();
+    private List<CorridorInfo> CorridorInfoList = new List<CorridorInfo>();
+
+    public enum PHASE
     {
         SETUP,
         HOOK,
@@ -29,23 +31,27 @@ public class PCG : MonoBehaviour
     public class RoomInfo
     {
         public Vector2Int RoomSize;
-        public Vector2Int LowerLeftPos;
+        public Vector2Int OriginPos;
+        public PHASE RoomPhase;
 
-        public Vector2Int NextTilePos;
-        public enum DIRECTION
+        public RoomInfo(Vector2Int roomSize, Vector2Int ogPos)
         {
-            UP,
-            DOWN,
-            LEFT,
-            RIGHT
-        };
-        public DIRECTION Direction;
-
-        public RoomInfo(Vector2Int nextTilePos, DIRECTION dir)
-        {
-            NextTilePos = nextTilePos;
-            Direction = dir;
+            RoomSize = roomSize;
+            OriginPos = ogPos;
         }
+    };
+
+    public class CorridorInfo
+    {
+        public List<Vector2Int> VertexPoints = new List<Vector2Int>();
+    };
+
+    public enum DIRECTION
+    {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
     };
 
     // Start is called before the first frame update
@@ -88,12 +94,11 @@ public class PCG : MonoBehaviour
 
         //Create the tile map
         TileMap = new GameObject[MaxMapSize.x, MaxMapSize.y];
-        TileMapMidPoint = (MaxMapSize.x * MaxMapSize.y) / 2;
         RNG = new System.Random();
 
         SpawnEdgeWalls();
 
-        RoomInfo currRoom = new RoomInfo(new Vector2Int(3, 3), RoomInfo.DIRECTION.UP);
+        RoomInfo currRoom = new RoomInfo(new Vector2Int(3, 3), new Vector2Int(2, 2));
         int minRoomPerPhase = RoomsToSpawn / 5;
         int minRoomPerPhaseRemainder = RoomsToSpawn % 5;
         int remainderCheck = minRoomPerPhaseRemainder % 2;
@@ -117,11 +122,14 @@ public class PCG : MonoBehaviour
         for (int i = 0; i < RoomsToSpawn; ++i)
         {
             //create the room first
-            currRoom = (i < RoomsToSpawn - 1)
-                ? SpawnRoom(currRoom, true)
-                : SpawnRoom(currRoom, false);
+            if (i < RoomsToSpawn - 1)
+                SpawnRoom(currRoom, true);
+            else
+                SpawnRoom(currRoom, false);
 
-            //then populate room based on phase
+            currRoom.RoomPhase = Phase;
+            RoomInfoList.Add(currRoom);
+
             switch (Phase)
             {
                 case PHASE.SETUP:
@@ -185,129 +193,81 @@ public class PCG : MonoBehaviour
             }
 
             ++currRoomInPhase;
+
+            currRoom = DecideNextRoomPos();
+
         }
 
+        SpawnCorridors();
         FillInWalls();
 
     }
 
     // PCG Room Helper Functions ------------------------------------------------------------------------------
 
-    RoomInfo SpawnRoom(RoomInfo roomInfo, bool hasCorridor)
+    void SpawnRoom(RoomInfo roomInfo, bool hasCorridor)
     {
-        //decide  room size
-        int roomSizeX = RNG.Next(1, 4) * 2 + 1;
-        int roomSizeY = RNG.Next(1, 4) * 2 + 1;
-
         //push starting to lower left
-        Vector2Int roomTilePos = roomInfo.NextTilePos;
-        if (roomInfo.Direction == RoomInfo.DIRECTION.UP)
-        {
-            roomTilePos.x -= (roomSizeX - 1) / 2;
-        }
-        else if (roomInfo.Direction == RoomInfo.DIRECTION.DOWN)
-        {
-            roomTilePos.x -= (roomSizeX - 1) / 2;
-            roomTilePos.y -= roomTilePos.y;
-        }
-        else if (roomInfo.Direction == RoomInfo.DIRECTION.LEFT)
-        {
-            roomTilePos.x -= (roomSizeX - 1) / 2;
-            roomTilePos.y -= roomSizeY;
-        }
-        else if (roomInfo.Direction == RoomInfo.DIRECTION.RIGHT)
-        {
-            roomTilePos.y -= (roomSizeY - 1) / 2;
-        }
-
-        Vector2Int lowerLeftPos = roomTilePos;
+        Vector2Int lowerLeftPos = roomInfo.OriginPos;
+        lowerLeftPos.x -= (lowerLeftPos.x - 1) / 2;
+        lowerLeftPos.y -= (lowerLeftPos.y - 1) / 2;
 
         //create floor tile
-        for (int x = 0; x < roomSizeX; ++x)
-            for (int y = 0; y < roomSizeY; ++y)
-                SpawnFloorTile(new Vector2Int(roomTilePos.x + x, roomTilePos.y + y));
+        for (int x = 0; x < roomInfo.RoomSize.x; ++x)
+            for (int y = 0; y < roomInfo.RoomSize.y; ++y)
+                SpawnFloorTile(new Vector2Int(lowerLeftPos.x + x, lowerLeftPos.y + y));
 
-        //decide corridor info
-        bool isSafe = false;
-        RoomInfo.DIRECTION nextRoomDir = RoomInfo.DIRECTION.UP;
-        Vector2Int roomTilePosBackUp = roomTilePos;
+        //for last tile
+        if (hasCorridor)
+            Spawn("portal", roomInfo.OriginPos);
+    }
 
-        while (!isSafe)
+    RoomInfo DecideNextRoomPos()
+    {
+        bool mapBoundsIsSafe = false;
+
+        Vector2Int roomSize = new Vector2Int();
+        Vector2Int nextOriginPos = new Vector2Int();
+
+        while (!mapBoundsIsSafe)
         {
-            nextRoomDir = (RoomInfo.DIRECTION)RNG.Next(0, 4);
-            roomTilePos = roomTilePosBackUp;
+            //decide  room size
+            roomSize.x = RNG.Next(1, 4) * 2 + 1;
+            roomSize.y = RNG.Next(1, 4) * 2 + 1;
+            Vector2Int halfRoomSize = new Vector2Int((roomSize.x - 1) / 2, (roomSize.y - 1) / 2);
 
-            if (nextRoomDir == RoomInfo.DIRECTION.UP)
+            //decide room pos
+            nextOriginPos.x = RNG.Next(0, MaxMapSize.x);
+            nextOriginPos.y = RNG.Next(0, MaxMapSize.y);
+
+            //bounds checking
+            if ((nextOriginPos.x - halfRoomSize.x < 0) || (nextOriginPos.y - halfRoomSize.y < 0)
+                || (nextOriginPos.x + halfRoomSize.x >= MaxMapSize.x) || (nextOriginPos.y + halfRoomSize.y >= MaxMapSize.y))
             {
-                roomTilePos.x += (roomSizeX - 1) / 2;
-                roomTilePos.y += roomSizeY;
-                if (GetTile(roomTilePos) != null)
+                //need to check if there are already rooms here
+                bool roomBoundsIsSafe = false;
+                foreach (var room in RoomInfoList)
                 {
-                    Debug.Log("sfjhbsjdfb");
-                    continue;
-                }
-                
-                if (!hasCorridor)
-                    Spawn("portal", roomTilePos);
-                SpawnFloorTile(roomTilePos);
-
-                ++roomTilePos.y;
-            }
-            else if (nextRoomDir == RoomInfo.DIRECTION.DOWN)
-            {
-                roomTilePos.x += (roomSizeX - 1) / 2;
-
-                if (GetTile(roomTilePos) != null)
-                {
-                    Debug.Log("sfjhbsjdfb");
-                    continue;
+                    Vector2Int halfRoomTemp = new Vector2Int((room.RoomSize.x - 1) / 2, (room.RoomSize.y - 1) / 2);
+                    if (!(((room.OriginPos.x - halfRoomTemp.x < nextOriginPos.x - halfRoomSize.x)
+                        && (room.OriginPos.y - halfRoomTemp.y < nextOriginPos.y - halfRoomSize.x))
+                        || ((room.OriginPos.x + halfRoomTemp.x >= nextOriginPos.x + halfRoomSize.x)
+                        && ((room.OriginPos.y + halfRoomTemp.y >= nextOriginPos.y + halfRoomSize.y)))))
+                        roomBoundsIsSafe = true;
+                    //to fix here what is gg on???
                 }
 
-                if (!hasCorridor)
-                    Spawn("portal", roomTilePos);
-                SpawnFloorTile(roomTilePos);
-
-                ++roomTilePos.y;
-            }
-            else if (nextRoomDir == RoomInfo.DIRECTION.LEFT)
-            {
-                roomTilePos.y += (roomSizeY - 1) / 2;
-
-                if (GetTile(roomTilePos) != null)
-                {
-                    Debug.Log("sfjhbsjdfb");
-                    continue;
-                }
-
-                if (!hasCorridor)
-                    Spawn("portal", roomTilePos);
-                SpawnFloorTile(roomTilePos);
-
-                ++roomTilePos.x;
-            }
-            else if (nextRoomDir == RoomInfo.DIRECTION.RIGHT)
-            {
-                roomTilePos.x += roomSizeX;
-                roomTilePos.y += (roomSizeY - 1) / 2;
-
-                if (GetTile(roomTilePos) != null)
-                {
-                    Debug.Log("sfjhbsjdfb");
-                    continue;
-                }
-
-                if (!hasCorridor)
-                    Spawn("portal", roomTilePos);
-                SpawnFloorTile(roomTilePos);
-
-                ++roomTilePos.x;
+                if (roomBoundsIsSafe)
+                    mapBoundsIsSafe = true;
             }
         }
 
-        RoomInfo retInfo = new RoomInfo(roomTilePos, nextRoomDir);
-        retInfo.RoomSize = new Vector2Int(roomSizeX, roomSizeY);
-        retInfo.LowerLeftPos = lowerLeftPos;
+        RoomInfo retInfo = new RoomInfo(roomSize, nextOriginPos);
         return retInfo;
+    }
+
+    void SpawnCorridors()
+    {
 
     }
 
@@ -348,12 +308,12 @@ public class PCG : MonoBehaviour
 
         if (count > 1)
         {
-            for (int i = 0; i < count; ++i)
-                spawnPosArr[i] = roominfo.LowerLeftPos + i * new Vector2Int(x, y);
+            //for (int i = 0; i < count; ++i)
+            //    spawnPosArr[i] = roominfo.LowerLeftPos + i * new Vector2Int(x, y);
         }
         else if (count == 1)
         {
-            spawnPosArr[0] = new Vector2Int(roominfo.LowerLeftPos.x + roominfo.RoomSize.x / 2, roominfo.LowerLeftPos.y + roominfo.RoomSize.y / 2);
+            //spawnPosArr[0] = new Vector2Int(roominfo.LowerLeftPos.x + roominfo.RoomSize.x / 2, roominfo.LowerLeftPos.y + roominfo.RoomSize.y / 2);
         }
 
         for (int i = 0; i < count; ++i)
