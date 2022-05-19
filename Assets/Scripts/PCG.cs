@@ -234,6 +234,7 @@ public class PCG : MonoBehaviour
             //decide  room size
             roomSize.x = RNG.Next(1, 4) * 2 + 1;
             roomSize.y = RNG.Next(1, 4) * 2 + 1;
+
             Vector2Int halfRoomSize = new Vector2Int((roomSize.x - 1) / 2, (roomSize.y - 1) / 2);
 
             //decide room pos
@@ -241,24 +242,23 @@ public class PCG : MonoBehaviour
             nextOriginPos.y = RNG.Next(0, MaxMapSize.y);
 
             //bounds checking
-            if ((nextOriginPos.x - halfRoomSize.x < 0) || (nextOriginPos.y - halfRoomSize.y < 0)
-                || (nextOriginPos.x + halfRoomSize.x >= MaxMapSize.x) || (nextOriginPos.y + halfRoomSize.y >= MaxMapSize.y))
+            if ((nextOriginPos.x - halfRoomSize.x <= 0) 
+                || (nextOriginPos.y - halfRoomSize.y <= 0)
+                || (nextOriginPos.x + halfRoomSize.x >= MaxMapSize.x) 
+                || (nextOriginPos.y + halfRoomSize.y >= MaxMapSize.y))
             {
                 //need to check if there are already rooms here
-                bool roomBoundsIsSafe = false;
                 foreach (var room in RoomInfoList)
                 {
                     Vector2Int halfRoomTemp = new Vector2Int((room.RoomSize.x - 1) / 2, (room.RoomSize.y - 1) / 2);
-                    if (!(((room.OriginPos.x - halfRoomTemp.x < nextOriginPos.x - halfRoomSize.x)
-                        && (room.OriginPos.y - halfRoomTemp.y < nextOriginPos.y - halfRoomSize.x))
+                    if (((room.OriginPos.x - halfRoomTemp.x <= nextOriginPos.x - halfRoomSize.x)
+                        && (room.OriginPos.y - halfRoomTemp.y <= nextOriginPos.y - halfRoomSize.x))
                         || ((room.OriginPos.x + halfRoomTemp.x >= nextOriginPos.x + halfRoomSize.x)
-                        && ((room.OriginPos.y + halfRoomTemp.y >= nextOriginPos.y + halfRoomSize.y)))))
-                        roomBoundsIsSafe = true;
-                    //to fix here what is gg on???
+                        && ((room.OriginPos.y + halfRoomTemp.y >= nextOriginPos.y + halfRoomSize.y))))
+                        continue;
                 }
 
-                if (roomBoundsIsSafe)
-                    mapBoundsIsSafe = true;
+                break;
             }
         }
 
