@@ -138,12 +138,12 @@ PrefabInstance:
     - target: {fileID: 2718702606646654961, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2718702606646654961, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 15
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2718702606646654961, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
@@ -204,6 +204,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1238335772146763477, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
         type: 3}
       propertyPath: RoomsToSpawn
@@ -271,6 +276,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae, type: 3}
+--- !u!1 &1056250664 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7179176755972908415, guid: bb13fe8a1ca1c1740a3ce43b8cfcdbae,
+    type: 3}
+  m_PrefabInstance: {fileID: 787567278}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1056250667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056250664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3881a3637bdfb924b8b7c7c2515953b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RoomPrefab: {fileID: 6374511748664037082, guid: f80fc58bd5ff8244ca206110e7d4dfd2,
+    type: 3}
+  EnemyNormal: {fileID: 1063118913074609479, guid: 7bbc359642d90cc4283782509ae8c264,
+    type: 3}
+  EnemyFast: {fileID: 2714390907974507460, guid: afbd95f3032e1124d8deca6204b9a26e,
+    type: 3}
+  EnemyBoss: {fileID: 6048948920214717231, guid: 16616d77ae194aa4794c0e3b71b0e189,
+    type: 3}
+  PortalPrefab: {fileID: 1532129697523406559, guid: c4d781752024af24193491a7ebb8e3ce,
+    type: 3}
+  MaxDungeonWidth: 20
+  MaxDungeonHeight: 20
 --- !u!850595691 &1600246190
 LightingSettings:
   m_ObjectHideFlags: 0
