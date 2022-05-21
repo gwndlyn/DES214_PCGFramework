@@ -163,7 +163,7 @@ MonoBehaviour:
   SilverKeys: 0
   StartingGoldKeys: 0
   GoldKeys: 0
-  StartingSpeed: 4
+  StartingSpeed: 6
   Speed: 0
 --- !u!114 &2718702606646654962
 MonoBehaviour:
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 3499704433885653709, guid: e583797fc7e58824499e7ac21e1d963a,
     type: 3}
-  BulletSpeed: 8
+  BulletSpeed: 10
   BulletRange: 10
   ShotCooldown: 1
   BulletSpreadAngle: 0.1

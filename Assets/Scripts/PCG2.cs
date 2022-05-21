@@ -53,13 +53,25 @@ public class PCG2 : MonoBehaviour
         temp = SpawnRoom(1, 10, PHASE.SETUP);
         EnemySpawner(EnemyNormal, temp, 1);
 
+        bool setupRoomNum = Random.Range(0, 2) == 0;
+        if (setupRoomNum)
+            temp = SpawnRoom(1, 9, PHASE.SETUP);
+        else
+            temp = SpawnRoom(1, 11, PHASE.SETUP);
+
         temp = SpawnRoom(2, 10, PHASE.SETUP);
         EnemySpawner(EnemyNormal, temp, 2);
+
+        setupRoomNum = Random.Range(0, 2) == 0;
+        if (setupRoomNum)
+            temp = SpawnRoom(2, 9, PHASE.SETUP);
+        else
+            temp = SpawnRoom(2, 11, PHASE.SETUP);
 
         temp = SpawnRoom(3, 10, PHASE.HOOK);
         EnemySpawner(EnemyNormal, temp, 4);
 
-        int devRoomNum = Random.Range(3, 7);
+        int devRoomNum = Random.Range(5, 11);
         for (int i = 4; i < 4 + devRoomNum; ++i)
         {
             temp = SpawnRoom(i, 10, PHASE.DEVELOPMENT);
@@ -113,6 +125,9 @@ public class PCG2 : MonoBehaviour
 
         temp = SpawnRoom(4 + devRoomNum + 1, 10, PHASE.TURN);
         EnemySpawner(EnemyBoss, temp, 1);
+        
+        temp = SpawnRoom(4 + devRoomNum + 1, 9, PHASE.TURN);
+        temp = SpawnRoom(4 + devRoomNum + 1, 11, PHASE.TURN);
 
         temp = SpawnRoom(4 + devRoomNum + 2, 10, PHASE.RESOLUTION);
         EnemySpawner(EnemyNormal, temp, 2);
