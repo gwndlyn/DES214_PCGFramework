@@ -143,7 +143,7 @@ PrefabInstance:
     - target: {fileID: 2718702606646654961, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 100
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 2718702606646654961, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
@@ -296,16 +296,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoomPrefab: {fileID: 6374511748664037082, guid: f80fc58bd5ff8244ca206110e7d4dfd2,
     type: 3}
+  PortalPrefab: {fileID: 1532129697523406559, guid: c4d781752024af24193491a7ebb8e3ce,
+    type: 3}
   EnemyNormal: {fileID: 1063118913074609479, guid: 7bbc359642d90cc4283782509ae8c264,
     type: 3}
   EnemyFast: {fileID: 2714390907974507460, guid: afbd95f3032e1124d8deca6204b9a26e,
     type: 3}
   EnemyBoss: {fileID: 6048948920214717231, guid: 16616d77ae194aa4794c0e3b71b0e189,
     type: 3}
-  PortalPrefab: {fileID: 1532129697523406559, guid: c4d781752024af24193491a7ebb8e3ce,
-    type: 3}
-  MaxDungeonWidth: 20
-  MaxDungeonHeight: 20
+  EnemySniper: {fileID: 0}
+  EnemySpread: {fileID: 0}
+  EnemyTank: {fileID: 0}
+  EnemyUltra: {fileID: 0}
+  BoostHealth: {fileID: 0}
+  BoostSpeed: {fileID: 0}
+  BoostShot: {fileID: 0}
+  MaxDungeonWidth: 50
+  MaxDungeonHeight: 50
 --- !u!850595691 &1600246190
 LightingSettings:
   m_ObjectHideFlags: 0

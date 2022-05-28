@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a8053b3862e4a4a85b5cbc794bf950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AggroRange: 2
+  AggroRange: 3
   MoveSpeed: 2
   WanderInterval: 1
   Aggroed: 0

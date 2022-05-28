@@ -48,7 +48,16 @@ public class EnemyStats : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //var enemy = GetComponent<EnemyChaseLogic>();
+        //if (enemy == null)
+        //    return;
+
+        //GameObject playerGO = GameObject.FindWithTag("Player");
+
+        //float dist = Vector3.Distance(playerGO.transform.position, this.transform.position); //distBtwnPlayerAndEnemy 
+
+        //if (enemy.AggroRange < dist)
+        //    GetComponent<EnemyChaseLogic>().Aggroed = true;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -57,25 +66,26 @@ public class EnemyStats : MonoBehaviour
         if (bullet != null && bullet.Team == Teams.Player)
         {
             Health -= 1;
-			GetComponent<EnemyChaseLogic>().Aggroed = true;
+            GetComponent<EnemyChaseLogic>().Aggroed = true;
 
             if (Health <= 0)
             {
                 Destroy(gameObject);
             }
         }
-		
-		//Aggro on friendly fire
+
+        //Aggro on friendly fire
         if (bullet != null && bullet.Team != Teams.Player)
-			GetComponent<EnemyChaseLogic>().Aggroed = true;
+            GetComponent<EnemyChaseLogic>().Aggroed = true;
     }
 
     private void OnTriggerStay2D(Collider2D col)
     {
-		//Aggro on friendly collision
+        //Aggro on friendly collision
         var enemy = col.GetComponent<EnemyChaseLogic>();
         if (enemy != null && enemy.Aggroed == true)
-			GetComponent<EnemyChaseLogic>().Aggroed = true;
+            GetComponent<EnemyChaseLogic>().Aggroed = true;
+
     }
 
     private void OnDestroy()

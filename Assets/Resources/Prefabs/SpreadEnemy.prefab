@@ -137,8 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a8053b3862e4a4a85b5cbc794bf950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AggroRange: 1
-  MoveSpeed: 1
+  AggroRange: 4
+  MoveSpeed: 3
   WanderInterval: 1
   Aggroed: 0
 --- !u!114 &925161721755746206

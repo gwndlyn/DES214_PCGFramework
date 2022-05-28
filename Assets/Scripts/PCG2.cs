@@ -8,7 +8,8 @@ public enum PHASE
     HOOK,
     DEVELOPMENT,
     TURN,
-    RESOLUTION
+    RESOLUTION,
+    ALTERNATE
 };
 
 public enum DIRECTION
@@ -38,169 +39,123 @@ public class PCG2 : MonoBehaviour
     public GameObject BoostShot;
 
     //other vars
-    public int MaxDungeonWidth = 20;
-    public int MaxDungeonHeight = 20;
+    public int MaxDungeonWidth = 50;
+    public int MaxDungeonHeight = 50;
 
+    //private PHASE Phase = PHASE.SETUP;
     public BaseRoomStats[,] RoomStats;
+    private int[] NumberOfRoomsPerPhase;
+    private int NumOfAltPaths;
 
-    private PHASE Phase = PHASE.SETUP;
+    private Vector3 prevRoomPos;
+    private int currTotalRoomWidth = 0;
+    private int startY = 25;
+    private int startYMinusOne;
+    private int startYPlusOne;
 
     // Start is called before the first frame update
     void Start()
     {
         RoomStats = new BaseRoomStats[MaxDungeonWidth, MaxDungeonHeight];
 
+        startYMinusOne = startY - 1;
+        startYPlusOne = startY + 1;
+
+        GenerateRoomsPerPhase();
+
         //create dungeon
         CreateDungeon();
+        CreateAlternatePath();
         KnockDownWalls();
+    }
+
+    void GenerateRoomsPerPhase()
+    {
+        NumberOfRoomsPerPhase = new int[5];
+        NumberOfRoomsPerPhase[0] = Random.Range(2, 4);
+        NumberOfRoomsPerPhase[1] = Random.Range(1, 3);
+        NumberOfRoomsPerPhase[2] = 4 + Random.Range(6, 12);
+        NumberOfRoomsPerPhase[3] = Random.Range(3, 8);
+        NumberOfRoomsPerPhase[4] = Random.Range(2, 4);
+
+        NumOfAltPaths = Random.Range(4, 10);
+    }
+
+    void CreateDungeonByPhase(PHASE phase, int rangeX, int rangeY)
+    {
+        for (int i = currTotalRoomWidth; i < currTotalRoomWidth + NumberOfRoomsPerPhase[(int)phase]; ++i)
+        {
+            prevRoomPos = SpawnRoom(i, startY, phase);
+
+            int sideRoomRoll = Random.Range(rangeX, rangeY);
+            for (int j = startYMinusOne; j > startYMinusOne - sideRoomRoll; --j)
+            {
+                prevRoomPos = SpawnRoom(i, j, phase);
+            }
+
+            sideRoomRoll = Random.Range(rangeX, rangeY);
+            for (int j = startYPlusOne; j < startYPlusOne + sideRoomRoll; ++j)
+            {
+                prevRoomPos = SpawnRoom(i, j, phase);
+            }
+        }
+        currTotalRoomWidth += NumberOfRoomsPerPhase[(int)phase];
     }
 
     void CreateDungeon()
     {
-        Vector3 temp;
+        prevRoomPos = SpawnRoom(0, startY, PHASE.SETUP);
+        ++currTotalRoomWidth;
 
-        temp = SpawnRoom(0, 10, PHASE.SETUP);
+        CreateDungeonByPhase(PHASE.SETUP, 1, 3);
+        CreateDungeonByPhase(PHASE.HOOK, 1, 2);
+        CreateDungeonByPhase(PHASE.DEVELOPMENT, 1, 5);
+        CreateDungeonByPhase(PHASE.TURN, 1, 4);
+        CreateDungeonByPhase(PHASE.RESOLUTION, 1, 3);
 
-        temp = SpawnRoom(1, 10, PHASE.SETUP);
-        EnemySpawner(EnemyNormal, temp, 1);
+        prevRoomPos = SpawnRoom(currTotalRoomWidth++, startY, PHASE.RESOLUTION);
+        Instantiate(PortalPrefab, new Vector3(prevRoomPos.x * 10f, prevRoomPos.y * 10f, 0.0f), Quaternion.identity);
+    }
 
-        bool setupRoomNum = Random.Range(0, 2) == 0;
-        if (setupRoomNum)
-            temp = SpawnRoom(1, 9, PHASE.SETUP);
-        else
-            temp = SpawnRoom(1, 11, PHASE.SETUP);
-
-        temp = SpawnRoom(2, 10, PHASE.SETUP);
-        EnemySpawner(EnemyNormal, temp, 2);
-
-        setupRoomNum = Random.Range(0, 2) == 0;
-        if (setupRoomNum)
-            temp = SpawnRoom(2, 9, PHASE.SETUP);
-        else
-            temp = SpawnRoom(2, 11, PHASE.SETUP);
-
-        temp = SpawnRoom(3, 10, PHASE.HOOK);
-        EnemySpawner(EnemyNormal, temp, 4);
-
-        int devRoomNum = 4 + Random.Range(5, 10);
-        for (int i = 4; i < devRoomNum; ++i)
+    void CreateAlternatePath()
+    {
+        for (int i = 0; i < NumOfAltPaths; ++i)
         {
-            temp = SpawnRoom(i, 10, PHASE.DEVELOPMENT);
+            bool dir = Random.Range(0, 2) == 0;
+            int posY = Random.Range(2, MaxDungeonHeight / 3);
+            posY = dir ? startY + posY : startY - posY;
+            int posXLeft = Random.Range(1, currTotalRoomWidth / 2);
+            int posXRight = posXLeft + Random.Range(2, (currTotalRoomWidth - 1) / 2);
 
-            int sideRoomRoll = Random.Range(1, 5);
-            for (int j = 9; j > 9 - sideRoomRoll; --j)
+            //pillars first
+            if (dir) //going upwards
             {
-                temp = SpawnRoom(i, j, PHASE.DEVELOPMENT);
+                for (int y = startY; y < posY; ++y)
+                {
+                    if (RoomStats[posXLeft, y] == null)
+                        prevRoomPos = SpawnRoom(posXLeft, y, PHASE.DEVELOPMENT);
+                    if (RoomStats[posXRight, y] == null)
+                        prevRoomPos = SpawnRoom(posXRight, y, PHASE.DEVELOPMENT);
+                }
+            }
+            else
+            {
+                for (int y = startY; y > posY; --y)
+                {
+                    if (RoomStats[posXLeft, y] == null)
+                        prevRoomPos = SpawnRoom(posXLeft, y, PHASE.DEVELOPMENT);
+                    if (RoomStats[posXRight, y] == null)
+                        prevRoomPos = SpawnRoom(posXRight, y, PHASE.DEVELOPMENT);
+                }
             }
 
-            sideRoomRoll = Random.Range(1, 5);
-            for (int j = 11; j < 11 + sideRoomRoll; ++j)
+            //connect the rop
+            for (int x = posXLeft; x < posXRight + 1; ++x)
             {
-                temp = SpawnRoom(i, j, PHASE.DEVELOPMENT);
+                if (RoomStats[x, posY] == null)
+                    prevRoomPos = SpawnRoom(x, posY, PHASE.DEVELOPMENT);
             }
         }
-
-        //int devRoomNum = Random.Range(5, 10);
-        //for (int i = 4; i < 4 + devRoomNum; ++i)
-        //{
-        //    temp = SpawnRoom(i, 10, PHASE.DEVELOPMENT);
-        //    EnemySpawner(EnemyNormal, temp, 2);
-        //    EnemySpawner(EnemyFast, temp, 2);
-
-        //    int sideRoomRoll = Random.Range(1, 10);
-        //    if (sideRoomRoll < 4)
-        //    {
-        //        if (sideRoomRoll % 2 == 0)
-        //        {
-        //            temp = SpawnRoom(i, 11, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-        //        }
-        //        else
-        //        {
-        //            temp = SpawnRoom(i, 9, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-        //        }
-
-        //        if (sideRoomRoll == 2)
-        //        {
-        //            temp = SpawnRoom(i, 12, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-        //        }
-        //    }
-        //    else if (sideRoomRoll < 6)
-        //    {
-        //        if (sideRoomRoll % 2 == 0)
-        //        {
-        //            temp = SpawnRoom(i, 11, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-
-        //            temp = SpawnRoom(i, 12, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-        //        }
-        //        else
-        //        {
-        //            temp = SpawnRoom(i, 9, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-
-        //            temp = SpawnRoom(i, 8, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-        //        }
-
-        //        if (sideRoomRoll == 2)
-        //        {
-        //            temp = SpawnRoom(i, 13, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-
-        //            temp = SpawnRoom(i, 14, PHASE.DEVELOPMENT);
-        //            EnemySpawner(EnemyNormal, temp, 2);
-        //            EnemySpawner(EnemyFast, temp, 2);
-        //        }
-        //    }
-        //}
-
-        temp = SpawnRoom(devRoomNum, 10, PHASE.TURN);
-        EnemySpawner(EnemyNormal, temp, 3);
-
-        bool turnRoomNum = Random.Range(0, 2) == 0;
-        if (turnRoomNum)
-            temp = SpawnRoom(devRoomNum, 9, PHASE.TURN);
-        else
-            temp = SpawnRoom(devRoomNum, 11, PHASE.TURN);
-
-        temp = SpawnRoom(devRoomNum + 1, 10, PHASE.TURN);
-        EnemySpawner(EnemyBoss, temp, 1);
-
-        turnRoomNum = Random.Range(0, 2) == 0;
-        if (turnRoomNum)
-            temp = SpawnRoom(devRoomNum + 1, 9, PHASE.TURN);
-        else
-            temp = SpawnRoom(devRoomNum + 1, 11, PHASE.TURN);
-
-        temp = SpawnRoom(devRoomNum + 2, 10, PHASE.RESOLUTION);
-        EnemySpawner(EnemyNormal, temp, 2);
-
-        bool resolutionRoomNum = Random.Range(0, 2) == 0;
-        if (resolutionRoomNum)
-            temp = SpawnRoom(devRoomNum + 2, 9, PHASE.RESOLUTION);
-        else
-            temp = SpawnRoom(devRoomNum + 2, 11, PHASE.RESOLUTION);
-
-        temp = SpawnRoom(devRoomNum + 3, 10, PHASE.RESOLUTION);
-        Instantiate(PortalPrefab, new Vector3(temp.x * 10f, temp.y * 10f, 0.0f), Quaternion.identity);
-
-        resolutionRoomNum = Random.Range(0, 2) == 0;
-        if (resolutionRoomNum)
-            temp = SpawnRoom(devRoomNum + 3, 9, PHASE.RESOLUTION);
-        else
-            temp = SpawnRoom(devRoomNum + 3, 11, PHASE.RESOLUTION);
     }
 
     Vector3 SpawnRoom(int x, int y, PHASE phase)
@@ -236,6 +191,19 @@ public class PCG2 : MonoBehaviour
                     if (y > 0 && RoomStats[x, y - 1] != null)
                         RoomStats[x, y].DestroyWallRequest(DIRECTION.SOUTH);
 
+                    //destroy corners
+                    if (RoomStats[x, y].Phase == PHASE.TURN)
+                    {
+                        if (RoomStats[x - 1, y + 1] != null && RoomStats[x - 1, y] != null && RoomStats[x, y + 1] != null)
+                            RoomStats[x, y].DestroyCorner(BaseRoomStats.CORNERS.TOPLEFT);
+                        if (RoomStats[x + 1, y + 1] != null && RoomStats[x, y + 1] != null && RoomStats[x + 1, y] != null)
+                            RoomStats[x, y].DestroyCorner(BaseRoomStats.CORNERS.TOPRIGHT);
+                        if (RoomStats[x - 1, y - 1] != null && RoomStats[x, y - 1] != null && RoomStats[x - 1, y] != null)
+                            RoomStats[x, y].DestroyCorner(BaseRoomStats.CORNERS.BOTTOMLEFT);
+                        if (RoomStats[x + 1, y - 1] != null && RoomStats[x, y - 1] != null && RoomStats[x + 1, y] != null)
+                            RoomStats[x, y].DestroyCorner(BaseRoomStats.CORNERS.BOTTOMRIGHT);
+                    }
+
                 }
             }
         }
@@ -244,8 +212,6 @@ public class PCG2 : MonoBehaviour
 
     void EnemySpawner(Object type, Vector3 pos, int count)
     {
-        //Vector2Int[] spawnPosArr = new Vector2Int[count];
-
         for (int i = 0; i < count; ++i)
             Instantiate(type, new Vector3(pos.x * 10f, pos.y * 10f, 0.0f), Quaternion.identity);
     }

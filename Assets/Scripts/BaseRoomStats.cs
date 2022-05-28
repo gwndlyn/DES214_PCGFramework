@@ -18,13 +18,29 @@ public class BaseRoomStats : MonoBehaviour
     public GameObject WestDoorway;
     public GameObject EastDoorway;
 
+    public GameObject TopLeftCorner;
+    public GameObject TopRightCorner;
+    public GameObject BottomLeftCorner;
+    public GameObject BottomRightCorner;
+
+    private float floorAlpha = 0.5f;
+    public enum CORNERS
+    {
+        TOPLEFT,
+        TOPRIGHT,
+        BOTTOMLEFT,
+        BOTTOMRIGHT
+    };
+
+
     // Start is called before the first frame update
     public void Start()
     {
         SpriteRenderer floorRenderer = Floor.GetComponent<SpriteRenderer>();
 
-        Vector4 tempColor = new Vector4(Random.Range(0.0f,1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), floorRenderer.color.a + 0.1f);
+        Vector4 tempColor = new Vector4(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), floorAlpha);
         floorRenderer.color = tempColor;
+        floorAlpha += 0.1f;
     }
 
 
@@ -40,11 +56,15 @@ public class BaseRoomStats : MonoBehaviour
         }
         if (Phase == PHASE.DEVELOPMENT)
         {
-            DestroyWall(dir);
+            bool wallOrDoorway = Random.Range(0, 2) == 0;
+            if (wallOrDoorway)
+                DestroyWall(dir);
+            else
+                DestroyDoorway(dir);
         }
         if (Phase == PHASE.TURN)
         {
-            DestroyDoorway(dir);
+            DestroyWall(dir);
         }
         if (Phase == PHASE.RESOLUTION)
         {
@@ -107,10 +127,22 @@ public class BaseRoomStats : MonoBehaviour
         }
     }
 
+    public void DestroyCorner(CORNERS corner)
+    {
+        if (corner == CORNERS.TOPLEFT)
+            Destroy(TopLeftCorner);
+        if (corner == CORNERS.TOPRIGHT)
+            Destroy(TopRightCorner);
+        if (corner == CORNERS.BOTTOMLEFT)
+            Destroy(BottomLeftCorner);
+        if (corner == CORNERS.BOTTOMRIGHT)
+            Destroy(BottomRightCorner);
+    }
+
 
     // Update is called once per frame
     public void Update()
     {
-        
+
     }
 }

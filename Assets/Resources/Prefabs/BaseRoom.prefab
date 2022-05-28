@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1417350695620425317}
   - component: {fileID: 7109428955482919883}
   m_Layer: 0
-  m_Name: CornerWall (1)
+  m_Name: BottomLeftCorner
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6374511748664037083}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1417350695620425317
 SpriteRenderer:
@@ -1151,7 +1151,7 @@ GameObject:
   - component: {fileID: 7306612032792291001}
   - component: {fileID: 1632811242799708185}
   m_Layer: 0
-  m_Name: CornerWall (2)
+  m_Name: BottomRightCorner
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1169,7 +1169,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6374511748664037083}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7306612032792291001
 SpriteRenderer:
@@ -1371,7 +1371,7 @@ GameObject:
   - component: {fileID: 2736760165231222518}
   - component: {fileID: 164428605118497242}
   m_Layer: 0
-  m_Name: CornerWall (3)
+  m_Name: TopLeftCorner
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1389,7 +1389,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6374511748664037083}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2736760165231222518
 SpriteRenderer:
@@ -1531,10 +1531,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8279680511356859644}
-  - {fileID: 6374511748505656950}
-  - {fileID: 6374511747722136927}
   - {fileID: 6374511747634336534}
   - {fileID: 6374511747530095057}
+  - {fileID: 6374511748505656950}
+  - {fileID: 6374511747722136927}
   - {fileID: 6374511747750963610}
   - {fileID: 5973708035051966990}
   - {fileID: 1505148587398656625}
@@ -1565,6 +1565,10 @@ MonoBehaviour:
   SouthDoorway: {fileID: 7061778595545794171}
   WestDoorway: {fileID: 2330744424255182964}
   EastDoorway: {fileID: 7940443773714914496}
+  TopLeftCorner: {fileID: 5421519247365689161}
+  TopRightCorner: {fileID: 8020067971631144308}
+  BottomLeftCorner: {fileID: 333694876525737273}
+  BottomRightCorner: {fileID: 3935979273579566428}
 --- !u!1 &7061778595545794171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1830,7 +1834,7 @@ GameObject:
   - component: {fileID: 711923641177067875}
   - component: {fileID: 7536042979834320996}
   m_Layer: 0
-  m_Name: CornerWall (4)
+  m_Name: TopRightCorner
   m_TagString: Floor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1848,7 +1852,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6374511748664037083}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &711923641177067875
 SpriteRenderer:
