@@ -21,12 +21,23 @@ public enum DIRECTION
 
 public class PCG2 : MonoBehaviour
 {
+    //GO refs
     public GameObject RoomPrefab;
+    public GameObject PortalPrefab;
+
     public GameObject EnemyNormal;
     public GameObject EnemyFast;
     public GameObject EnemyBoss;
-    public GameObject PortalPrefab;
+    public GameObject EnemySniper;
+    public GameObject EnemySpread;
+    public GameObject EnemyTank;
+    public GameObject EnemyUltra;
 
+    public GameObject BoostHealth;
+    public GameObject BoostSpeed;
+    public GameObject BoostShot;
+
+    //other vars
     public int MaxDungeonWidth = 20;
     public int MaxDungeonHeight = 20;
 
@@ -39,8 +50,8 @@ public class PCG2 : MonoBehaviour
     {
         RoomStats = new BaseRoomStats[MaxDungeonWidth, MaxDungeonHeight];
 
+        //create dungeon
         CreateDungeon();
-
         KnockDownWalls();
     }
 
@@ -71,69 +82,125 @@ public class PCG2 : MonoBehaviour
         temp = SpawnRoom(3, 10, PHASE.HOOK);
         EnemySpawner(EnemyNormal, temp, 4);
 
-        int devRoomNum = Random.Range(5, 11);
-        for (int i = 4; i < 4 + devRoomNum; ++i)
+        int devRoomNum = 4 + Random.Range(5, 10);
+        for (int i = 4; i < devRoomNum; ++i)
         {
             temp = SpawnRoom(i, 10, PHASE.DEVELOPMENT);
-            EnemySpawner(EnemyNormal, temp, 2);
-            EnemySpawner(EnemyFast, temp, 2);
 
-            int sideRoomRoll = Random.Range(0, 10);
-            if (sideRoomRoll < 4)
+            int sideRoomRoll = Random.Range(1, 5);
+            for (int j = 9; j > 9 - sideRoomRoll; --j)
             {
-                if (sideRoomRoll % 2 == 0)
-                {
-                    temp = SpawnRoom(i, 11, PHASE.DEVELOPMENT);
-                    EnemySpawner(EnemyNormal, temp, 2);
-                    EnemySpawner(EnemyFast, temp, 2);
-                }
-                else
-                {
-                    temp = SpawnRoom(i, 9, PHASE.DEVELOPMENT);
-                    EnemySpawner(EnemyNormal, temp, 2);
-                    EnemySpawner(EnemyFast, temp, 2);
-                }
-            }
-            else if (sideRoomRoll < 6)
-            {
-                if (sideRoomRoll % 2 == 0)
-                {
-                    temp = SpawnRoom(i, 11, PHASE.DEVELOPMENT);
-                    EnemySpawner(EnemyNormal, temp, 2);
-                    EnemySpawner(EnemyFast, temp, 2);
-
-                    temp = SpawnRoom(i, 12, PHASE.DEVELOPMENT);
-                    EnemySpawner(EnemyNormal, temp, 2);
-                    EnemySpawner(EnemyFast, temp, 2);
-                }
-                else
-                {
-                    temp = SpawnRoom(i, 9, PHASE.DEVELOPMENT);
-                    EnemySpawner(EnemyNormal, temp, 2);
-                    EnemySpawner(EnemyFast, temp, 2);
-
-                    temp = SpawnRoom(i, 8, PHASE.DEVELOPMENT);
-                    EnemySpawner(EnemyNormal, temp, 2);
-                    EnemySpawner(EnemyFast, temp, 2);
-                }
+                temp = SpawnRoom(i, j, PHASE.DEVELOPMENT);
             }
 
+            sideRoomRoll = Random.Range(1, 5);
+            for (int j = 11; j < 11 + sideRoomRoll; ++j)
+            {
+                temp = SpawnRoom(i, j, PHASE.DEVELOPMENT);
+            }
         }
 
-        temp = SpawnRoom(4 + devRoomNum, 10, PHASE.TURN);
+        //int devRoomNum = Random.Range(5, 10);
+        //for (int i = 4; i < 4 + devRoomNum; ++i)
+        //{
+        //    temp = SpawnRoom(i, 10, PHASE.DEVELOPMENT);
+        //    EnemySpawner(EnemyNormal, temp, 2);
+        //    EnemySpawner(EnemyFast, temp, 2);
+
+        //    int sideRoomRoll = Random.Range(1, 10);
+        //    if (sideRoomRoll < 4)
+        //    {
+        //        if (sideRoomRoll % 2 == 0)
+        //        {
+        //            temp = SpawnRoom(i, 11, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+        //        }
+        //        else
+        //        {
+        //            temp = SpawnRoom(i, 9, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+        //        }
+
+        //        if (sideRoomRoll == 2)
+        //        {
+        //            temp = SpawnRoom(i, 12, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+        //        }
+        //    }
+        //    else if (sideRoomRoll < 6)
+        //    {
+        //        if (sideRoomRoll % 2 == 0)
+        //        {
+        //            temp = SpawnRoom(i, 11, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+
+        //            temp = SpawnRoom(i, 12, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+        //        }
+        //        else
+        //        {
+        //            temp = SpawnRoom(i, 9, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+
+        //            temp = SpawnRoom(i, 8, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+        //        }
+
+        //        if (sideRoomRoll == 2)
+        //        {
+        //            temp = SpawnRoom(i, 13, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+
+        //            temp = SpawnRoom(i, 14, PHASE.DEVELOPMENT);
+        //            EnemySpawner(EnemyNormal, temp, 2);
+        //            EnemySpawner(EnemyFast, temp, 2);
+        //        }
+        //    }
+        //}
+
+        temp = SpawnRoom(devRoomNum, 10, PHASE.TURN);
         EnemySpawner(EnemyNormal, temp, 3);
 
-        temp = SpawnRoom(4 + devRoomNum + 1, 10, PHASE.TURN);
-        EnemySpawner(EnemyBoss, temp, 1);
-        
-        temp = SpawnRoom(4 + devRoomNum + 1, 9, PHASE.TURN);
-        temp = SpawnRoom(4 + devRoomNum + 1, 11, PHASE.TURN);
+        bool turnRoomNum = Random.Range(0, 2) == 0;
+        if (turnRoomNum)
+            temp = SpawnRoom(devRoomNum, 9, PHASE.TURN);
+        else
+            temp = SpawnRoom(devRoomNum, 11, PHASE.TURN);
 
-        temp = SpawnRoom(4 + devRoomNum + 2, 10, PHASE.RESOLUTION);
+        temp = SpawnRoom(devRoomNum + 1, 10, PHASE.TURN);
+        EnemySpawner(EnemyBoss, temp, 1);
+
+        turnRoomNum = Random.Range(0, 2) == 0;
+        if (turnRoomNum)
+            temp = SpawnRoom(devRoomNum + 1, 9, PHASE.TURN);
+        else
+            temp = SpawnRoom(devRoomNum + 1, 11, PHASE.TURN);
+
+        temp = SpawnRoom(devRoomNum + 2, 10, PHASE.RESOLUTION);
         EnemySpawner(EnemyNormal, temp, 2);
 
-        temp = SpawnRoom(4 + devRoomNum + 3, 10, PHASE.RESOLUTION);
+        bool resolutionRoomNum = Random.Range(0, 2) == 0;
+        if (resolutionRoomNum)
+            temp = SpawnRoom(devRoomNum + 2, 9, PHASE.RESOLUTION);
+        else
+            temp = SpawnRoom(devRoomNum + 2, 11, PHASE.RESOLUTION);
+
+        temp = SpawnRoom(devRoomNum + 3, 10, PHASE.RESOLUTION);
         Instantiate(PortalPrefab, new Vector3(temp.x * 10f, temp.y * 10f, 0.0f), Quaternion.identity);
+
+        resolutionRoomNum = Random.Range(0, 2) == 0;
+        if (resolutionRoomNum)
+            temp = SpawnRoom(devRoomNum + 3, 9, PHASE.RESOLUTION);
+        else
+            temp = SpawnRoom(devRoomNum + 3, 11, PHASE.RESOLUTION);
     }
 
     Vector3 SpawnRoom(int x, int y, PHASE phase)

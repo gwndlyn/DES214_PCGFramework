@@ -3,7 +3,16 @@ guid: d4dfab9452fe4c04089c303a6cc67bb5
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - Floor: {instanceID: 0}
+  - NorthWall: {instanceID: 0}
+  - SouthWall: {instanceID: 0}
+  - WestWall: {instanceID: 0}
+  - EastWall: {instanceID: 0}
+  - NorthDoorway: {instanceID: 0}
+  - SouthDoorway: {instanceID: 0}
+  - WestDoorway: {instanceID: 0}
+  - EastDoorway: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

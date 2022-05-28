@@ -3,7 +3,31 @@ guid: 3881a3637bdfb924b8b7c7c2515953b0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - RoomPrefab: {fileID: 6374511748664037082, guid: f80fc58bd5ff8244ca206110e7d4dfd2,
+      type: 3}
+  - PortalPrefab: {fileID: 1532129697523406559, guid: c4d781752024af24193491a7ebb8e3ce,
+      type: 3}
+  - EnemyNormal: {fileID: 1063118913074609479, guid: 7bbc359642d90cc4283782509ae8c264,
+      type: 3}
+  - EnemyFast: {fileID: 2714390907974507460, guid: afbd95f3032e1124d8deca6204b9a26e,
+      type: 3}
+  - EnemyBoss: {fileID: 6048948920214717231, guid: 16616d77ae194aa4794c0e3b71b0e189,
+      type: 3}
+  - EnemySniper: {fileID: 925161721755746177, guid: c31a14130fdf37f41aa0cfd6f449e0e2,
+      type: 3}
+  - EnemySpread: {fileID: 925161721755746177, guid: 5e7d8dda712bd1a4e98b0cb64f715c00,
+      type: 3}
+  - EnemyTank: {fileID: 5279535845806182325, guid: 8070a2a0bc9956a43ab94c0e829bc530,
+      type: 3}
+  - EnemyUltra: {fileID: 4556069128369105342, guid: 9196746c3b7ec6d45b0ccbdc1dcef46d,
+      type: 3}
+  - BoostHealth: {fileID: 4509852169414228752, guid: ee0582eb8dfa86941bbf102607836d7c,
+      type: 3}
+  - BoostSpeed: {fileID: 7841332030121756062, guid: 09d9c2de96dc9cc41b38b0c067876c6f,
+      type: 3}
+  - BoostShot: {fileID: 8790380160609917880, guid: 6ec0fbb4b52b3cc4ea3afdc30c235a6d,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

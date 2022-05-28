@@ -23,36 +23,8 @@ public class BaseRoomStats : MonoBehaviour
     {
         SpriteRenderer floorRenderer = Floor.GetComponent<SpriteRenderer>();
 
-        switch (Phase)
-        {
-            case PHASE.SETUP:
-                {
-                    floorRenderer.color = Color.red;
-                    break;
-                }
-            case PHASE.HOOK:
-                {
-                    floorRenderer.color = Color.magenta;
-                    break;
-                }
-            case PHASE.DEVELOPMENT:
-                {
-                    floorRenderer.color = Color.yellow;
-                    break;
-                }
-            case PHASE.TURN:
-                {
-                    floorRenderer.color = Color.blue;
-                    break;
-                }
-            case PHASE.RESOLUTION:
-                {
-                    floorRenderer.color = Color.green;
-                    break;
-                }
-            default:
-                break;
-        }
+        Vector4 tempColor = new Vector4(Random.Range(0.0f,1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), floorRenderer.color.a + 0.1f);
+        floorRenderer.color = tempColor;
     }
 
 
