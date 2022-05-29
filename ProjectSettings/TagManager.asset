@@ -11,6 +11,7 @@ TagManager:
   - GoldDoor
   - SilverDoor
   - Floor
+  - Bullet
   layers:
   - Default
   - TransparentFX

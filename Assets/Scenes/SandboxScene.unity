@@ -185,10 +185,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2718702606646654962, guid: fc37f8548e748f04f99984295524785e,
+        type: 3}
+      propertyPath: ShotCooldown
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718702606646654962, guid: fc37f8548e748f04f99984295524785e,
+        type: 3}
+      propertyPath: BulletSpreadAngle
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 2718702606646654963, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
       propertyPath: StartingSpeed
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2718702606646654963, guid: fc37f8548e748f04f99984295524785e,
+        type: 3}
+      propertyPath: StartingHealth
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2718702606646654973, guid: fc37f8548e748f04f99984295524785e,
         type: 3}
@@ -304,13 +319,22 @@ MonoBehaviour:
     type: 3}
   EnemyBoss: {fileID: 6048948920214717231, guid: 16616d77ae194aa4794c0e3b71b0e189,
     type: 3}
-  EnemySniper: {fileID: 0}
-  EnemySpread: {fileID: 0}
-  EnemyTank: {fileID: 0}
-  EnemyUltra: {fileID: 0}
-  BoostHealth: {fileID: 0}
-  BoostSpeed: {fileID: 0}
-  BoostShot: {fileID: 0}
+  EnemySniper: {fileID: 925161721755746177, guid: c31a14130fdf37f41aa0cfd6f449e0e2,
+    type: 3}
+  EnemySpread: {fileID: 925161721755746177, guid: 5e7d8dda712bd1a4e98b0cb64f715c00,
+    type: 3}
+  EnemyTank: {fileID: 5279535845806182325, guid: 8070a2a0bc9956a43ab94c0e829bc530,
+    type: 3}
+  EnemyUltra: {fileID: 4556069128369105342, guid: 9196746c3b7ec6d45b0ccbdc1dcef46d,
+    type: 3}
+  BoostHealth: {fileID: 4509852169414228752, guid: ee0582eb8dfa86941bbf102607836d7c,
+    type: 3}
+  BoostSpeed: {fileID: 7841332030121756062, guid: 09d9c2de96dc9cc41b38b0c067876c6f,
+    type: 3}
+  BoostShot: {fileID: 8790380160609917880, guid: 6ec0fbb4b52b3cc4ea3afdc30c235a6d,
+    type: 3}
+  BoostHeart: {fileID: 4516855188263611784, guid: 855c3d72b05c23345a50fc4cefc163cd,
+    type: 3}
   MaxDungeonWidth: 50
   MaxDungeonHeight: 50
 --- !u!850595691 &1600246190

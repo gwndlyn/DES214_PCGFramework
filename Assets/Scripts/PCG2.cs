@@ -8,8 +8,7 @@ public enum PHASE
     HOOK,
     DEVELOPMENT,
     TURN,
-    RESOLUTION,
-    ALTERNATE
+    RESOLUTION
 };
 
 public enum DIRECTION
@@ -37,12 +36,12 @@ public class PCG2 : MonoBehaviour
     public GameObject BoostHealth;
     public GameObject BoostSpeed;
     public GameObject BoostShot;
+    public GameObject BoostHeart;
 
     //other vars
     public int MaxDungeonWidth = 50;
     public int MaxDungeonHeight = 50;
 
-    //private PHASE Phase = PHASE.SETUP;
     public BaseRoomStats[,] RoomStats;
     private int[] NumberOfRoomsPerPhase;
     private int NumOfAltPaths;
@@ -53,6 +52,10 @@ public class PCG2 : MonoBehaviour
     private int startYMinusOne;
     private int startYPlusOne;
 
+    private int[] enemySetPerPhase;
+    private Object[] enemySet;
+    private Object[] boostSet;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -62,10 +65,14 @@ public class PCG2 : MonoBehaviour
         startYPlusOne = startY + 1;
 
         GenerateRoomsPerPhase();
+        GenerateEnemyPerPhase();
 
         //create dungeon
         CreateDungeon();
         CreateAlternatePath();
+
+        GenerateEnemiesAndBoosts();
+
         KnockDownWalls();
     }
 
@@ -78,7 +85,7 @@ public class PCG2 : MonoBehaviour
         NumberOfRoomsPerPhase[3] = Random.Range(3, 8);
         NumberOfRoomsPerPhase[4] = Random.Range(2, 4);
 
-        NumOfAltPaths = Random.Range(4, 10);
+        NumOfAltPaths = Random.Range(6, 13);
     }
 
     void CreateDungeonByPhase(PHASE phase, int rangeX, int rangeY)
@@ -205,6 +212,103 @@ public class PCG2 : MonoBehaviour
                     }
 
                 }
+            }
+        }
+    }
+
+    void GenerateEnemyPerPhase()
+    {
+        //they can generate only if the phase is equal to or lower than the tile phase
+        enemySetPerPhase = new int[5];
+        enemySetPerPhase[0] = 1;
+        enemySetPerPhase[1] = 3;
+        enemySetPerPhase[2] = 5;
+        enemySetPerPhase[3] = 7;
+        enemySetPerPhase[4] = 4;
+
+        enemySet = new Object[7];
+        enemySet[0] = EnemyNormal;
+        enemySet[1] = EnemyFast;
+        enemySet[2] = EnemySniper;
+        enemySet[3] = EnemySpread;
+        enemySet[4] = EnemyTank;
+        enemySet[5] = EnemyBoss;
+        enemySet[6] = EnemyUltra;
+
+        boostSet = new Object[4];
+        boostSet[0] = BoostHealth;
+        boostSet[1] = BoostSpeed;
+        boostSet[2] = BoostShot;
+        boostSet[3] = BoostHeart;
+    }
+
+    void GenerateEnemiesAndBoosts()
+    {
+        for (int x = 0; x < MaxDungeonWidth; ++x)
+        {
+            for (int y = 0; y < MaxDungeonHeight; ++y)
+            {
+                if (RoomStats[x, y] == null
+                    || (x == 0 && y == startY)
+                    || (x == currTotalRoomWidth - 1))
+                    continue;
+
+                bool isEmpty = Random.Range(1, 6) == 1;
+                if (isEmpty)
+                    continue;
+
+                bool chanceForMultipleEnemies = Random.Range(1, 5) == 1;
+                int numOfEnemies = chanceForMultipleEnemies ? Random.Range(1, 3) : 1;
+                int enemyRange = 0;
+
+                switch (RoomStats[x, y].Phase)
+                {
+                    case PHASE.SETUP:
+                        {
+                            enemyRange = Random.Range(0, enemySetPerPhase[0]);
+                            break;
+                        }
+                    case PHASE.HOOK:
+                        {
+                            enemyRange = Random.Range(0, enemySetPerPhase[1]);
+                            break;
+                        }
+                    case PHASE.DEVELOPMENT:
+                        {
+                            bool isBoost = Random.Range(1, 4) == 1; //1 in 3 chances
+
+                            if (isBoost)
+                            {
+                                int boostRange = Random.Range(0, 4);
+                                Instantiate(boostSet[boostRange], new Vector3(x * 10.0f, y * 10.0f, 0.0f), Quaternion.identity);
+                            }
+                            else
+                            {
+                                enemyRange = Random.Range(0, enemySetPerPhase[2]);
+                                EnemySpawner(enemySet[enemyRange], new Vector3(x, y, 0), numOfEnemies);
+                            }
+
+                            break;
+                        }
+                    case PHASE.TURN:
+                        {
+                            enemyRange = Random.Range(0, enemySetPerPhase[3]);
+                            break;
+                        }
+                    case PHASE.RESOLUTION:
+                        {
+                            enemyRange = Random.Range(0, enemySetPerPhase[4]);
+                            break;
+                        }
+                }
+
+                //safety adjustments
+                if (enemySet[enemyRange] == EnemyBoss)
+                    numOfEnemies = 1;
+
+                //Instantiate(enemySet[enemyRange], new Vector3(x * 10.0f, y * 10.0f, 0.0f), Quaternion.identity);
+                if (RoomStats[x, y].Phase != PHASE.DEVELOPMENT)
+                    EnemySpawner(enemySet[enemyRange], new Vector3(x, y, 0), numOfEnemies);
             }
         }
     }

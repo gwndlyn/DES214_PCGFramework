@@ -23,7 +23,6 @@ public class BaseRoomStats : MonoBehaviour
     public GameObject BottomLeftCorner;
     public GameObject BottomRightCorner;
 
-    private float floorAlpha = 0.5f;
     public enum CORNERS
     {
         TOPLEFT,
@@ -32,17 +31,14 @@ public class BaseRoomStats : MonoBehaviour
         BOTTOMRIGHT
     };
 
-
     // Start is called before the first frame update
     public void Start()
     {
         SpriteRenderer floorRenderer = Floor.GetComponent<SpriteRenderer>();
 
-        Vector4 tempColor = new Vector4(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), floorAlpha);
+        Vector4 tempColor = new Vector4(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0.6f);
         floorRenderer.color = tempColor;
-        floorAlpha += 0.1f;
     }
-
 
     public void DestroyWallRequest(DIRECTION dir)
     {
@@ -56,11 +52,11 @@ public class BaseRoomStats : MonoBehaviour
         }
         if (Phase == PHASE.DEVELOPMENT)
         {
-            bool wallOrDoorway = Random.Range(0, 2) == 0;
+            bool wallOrDoorway = Random.Range(0, 4) == 0;
             if (wallOrDoorway)
-                DestroyWall(dir);
-            else
                 DestroyDoorway(dir);
+            else
+                DestroyWall(dir);
         }
         if (Phase == PHASE.TURN)
         {
@@ -70,7 +66,6 @@ public class BaseRoomStats : MonoBehaviour
         {
             DestroyDoorway(dir);
         }
-
     }
 
     public void DestroyDoorway(DIRECTION dir)
@@ -145,4 +140,5 @@ public class BaseRoomStats : MonoBehaviour
     {
 
     }
+
 }

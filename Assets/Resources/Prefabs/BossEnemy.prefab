@@ -141,7 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyHealthBarPrefab: {fileID: 1248845440106708752, guid: 8b23492cb9efaae49ace4f65e89236ae,
     type: 3}
-  StartingHealth: 1
+  StartingHealth: 8
 --- !u!114 &6048948920214717233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,9 +154,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a8053b3862e4a4a85b5cbc794bf950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AggroRange: 5
-  MoveSpeed: 2
-  WanderInterval: 1
+  AggroRange: 10
+  MoveSpeed: 3
+  WanderInterval: 2
   Aggroed: 0
 --- !u!114 &6048948920214717232
 MonoBehaviour:
@@ -175,7 +175,7 @@ MonoBehaviour:
   ShootCooldown: 0.5
   BulletSpeed: 8
   BulletRange: 10
-  BulletsPerShot: 1
+  BulletsPerShot: 2
   BulletSpreadAngle: 0.5
 --- !u!114 &3055895041805524547
 MonoBehaviour:

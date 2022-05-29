@@ -13,7 +13,15 @@ Description:
 *******************************************************************************/
 using UnityEngine;
 
-public enum CollectibleTypes { HealthBoost, SpeedBoost, ShotBoost, SilverKey, GoldKey, Heart }
+public enum CollectibleTypes
+{
+    HealthBoost,
+    SpeedBoost,
+    ShotBoost,
+    SilverKey,
+    GoldKey,
+    Heart
+}
 
 public class CollectibleLogic : MonoBehaviour
 {
