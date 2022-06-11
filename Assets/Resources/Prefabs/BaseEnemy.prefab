@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1063118913074609477}
   - component: {fileID: 1063118913074609478}
   - component: {fileID: 1063118913074609499}
-  - component: {fileID: -4304142503058462231}
   - component: {fileID: 1063118913074609498}
   - component: {fileID: 1063118913074609497}
   - component: {fileID: 1063118913074609496}
@@ -111,22 +110,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &-4304142503058462231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1063118913074609479}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3153cd7d73afca04b82fef46216c9f91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ECL: {fileID: 0}
-  ESL: {fileID: 0}
-  ES: {fileID: 0}
-  EnemyDifficulty: 0
 --- !u!114 &1063118913074609498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyHealthBarPrefab: {fileID: 1248845440106708752, guid: 8b23492cb9efaae49ace4f65e89236ae,
     type: 3}
-  StartingHealth: 1
+  StartingHealth: 2
 --- !u!114 &1063118913074609497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a8053b3862e4a4a85b5cbc794bf950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AggroRange: 3
+  AggroRange: 8
   MoveSpeed: 2
   WanderInterval: 1
   Aggroed: 0
@@ -173,8 +156,8 @@ MonoBehaviour:
   BulletPrefab: {fileID: 949405139173548867, guid: 8a17d45d188b39449aa155aa0cdd70e0,
     type: 3}
   ShootCooldown: 1
-  BulletSpeed: 3
-  BulletRange: 10
+  BulletSpeed: 4
+  BulletRange: 7
   BulletsPerShot: 1
   BulletSpreadAngle: 0.5
 --- !u!114 &8264996340615861227

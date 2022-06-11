@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6048948920214717229}
   - component: {fileID: 6048948920214717230}
   - component: {fileID: 6048948920214717235}
-  - component: {fileID: -2075299794854366360}
   - component: {fileID: 6048948920214717234}
   - component: {fileID: 6048948920214717233}
   - component: {fileID: 6048948920214717232}
@@ -33,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 6048948920214717231}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7, y: 9, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 6, y: 6, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -111,22 +110,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &-2075299794854366360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6048948920214717231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3153cd7d73afca04b82fef46216c9f91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ECL: {fileID: 0}
-  ESL: {fileID: 0}
-  ES: {fileID: 0}
-  EnemyDifficulty: 3
 --- !u!114 &6048948920214717234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyHealthBarPrefab: {fileID: 1248845440106708752, guid: 8b23492cb9efaae49ace4f65e89236ae,
     type: 3}
-  StartingHealth: 8
+  StartingHealth: 10
 --- !u!114 &6048948920214717233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AggroRange: 10
   MoveSpeed: 3
-  WanderInterval: 2
+  WanderInterval: 1
   Aggroed: 0
 --- !u!114 &6048948920214717232
 MonoBehaviour:
@@ -172,11 +155,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 949405139173548867, guid: 8a17d45d188b39449aa155aa0cdd70e0,
     type: 3}
-  ShootCooldown: 0.5
+  ShootCooldown: 1
   BulletSpeed: 8
-  BulletRange: 10
-  BulletsPerShot: 2
-  BulletSpreadAngle: 0.5
+  BulletRange: 15
+  BulletsPerShot: 20
+  BulletSpreadAngle: 1
 --- !u!114 &3055895041805524547
 MonoBehaviour:
   m_ObjectHideFlags: 0

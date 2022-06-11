@@ -124,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyHealthBarPrefab: {fileID: 1248845440106708752, guid: 8b23492cb9efaae49ace4f65e89236ae,
     type: 3}
-  StartingHealth: 3
+  StartingHealth: 5
 --- !u!114 &925161721755746207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,11 +155,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 949405139173548867, guid: 8a17d45d188b39449aa155aa0cdd70e0,
     type: 3}
-  ShootCooldown: 3
-  BulletSpeed: 3
+  ShootCooldown: 2
+  BulletSpeed: 5
   BulletRange: 10
-  BulletsPerShot: 4
-  BulletSpreadAngle: 0.5
+  BulletsPerShot: 5
+  BulletSpreadAngle: 0.7
 --- !u!114 &1659506027076165541
 MonoBehaviour:
   m_ObjectHideFlags: 0

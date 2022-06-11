@@ -137,12 +137,19 @@ public class HeroStats : MonoBehaviour
 						GameObject.Destroy(golddoor);
                     break;
                 case CollectibleTypes.SpeedBoost:
-                    Speed += 3;
+                    Speed += 2;
+                    if (Speed >= 12)
+                        Speed = 12;
                     break;
                 case CollectibleTypes.ShotBoost:
                     ++(GetComponent<HeroShoot>().BulletsPerShot);
-                    (GetComponent<HeroShoot>().ShotCooldown) -= 0.2f;
-                    break;
+                    GetComponent<HeroShoot>().ShotCooldown -= 0.1f;
+
+                    if (GetComponent<HeroShoot>().BulletsPerShot >= 5)
+                        GetComponent<HeroShoot>().BulletsPerShot = 5;
+                    if (GetComponent<HeroShoot>().ShotCooldown <= 0.1f)
+                        GetComponent<HeroShoot>().ShotCooldown = 0.05f;
+                        break;
                 case CollectibleTypes.Heart:
                     if (Health == MaxHealth)
                         return;

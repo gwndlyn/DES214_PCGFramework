@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2714390907974507462}
   - component: {fileID: 2714390907974507461}
   - component: {fileID: 2714390907974507480}
-  - component: {fileID: -1667093212639599601}
   - component: {fileID: 2714390907974507481}
   - component: {fileID: 2714390907974507482}
   - component: {fileID: 2714390907974507483}
@@ -111,22 +110,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &-1667093212639599601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2714390907974507460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3153cd7d73afca04b82fef46216c9f91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ECL: {fileID: 0}
-  ESL: {fileID: 0}
-  ES: {fileID: 0}
-  EnemyDifficulty: 1
 --- !u!114 &2714390907974507481
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,8 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a8053b3862e4a4a85b5cbc794bf950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AggroRange: 7
-  MoveSpeed: 5
+  AggroRange: 8
+  MoveSpeed: 4
   WanderInterval: 1
   Aggroed: 0
 --- !u!114 &2714390907974507483
@@ -172,8 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 949405139173548867, guid: 8a17d45d188b39449aa155aa0cdd70e0,
     type: 3}
-  ShootCooldown: 0.8
-  BulletSpeed: 4
+  ShootCooldown: 1
+  BulletSpeed: 6
   BulletRange: 10
   BulletsPerShot: 1
   BulletSpreadAngle: 0.1

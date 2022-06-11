@@ -131,7 +131,7 @@ public class PCG2 : MonoBehaviour
             bool dir = Random.Range(0, 2) == 0;
             int posY = Random.Range(2, MaxDungeonHeight / 3);
             posY = dir ? startY + posY : startY - posY;
-            int posXLeft = Random.Range(1, currTotalRoomWidth / 2);
+            int posXLeft = Random.Range(2, currTotalRoomWidth / 2);
             int posXRight = posXLeft + Random.Range(2, (currTotalRoomWidth - 1) / 2);
 
             //pillars first
@@ -275,7 +275,7 @@ public class PCG2 : MonoBehaviour
                         }
                     case PHASE.DEVELOPMENT:
                         {
-                            bool isBoost = Random.Range(1, 4) == 1; //1 in 3 chances
+                            bool isBoost = Random.Range(1, 4) == 1; //1 in 4 chances
 
                             if (isBoost)
                             {
